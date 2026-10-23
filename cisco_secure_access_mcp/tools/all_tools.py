@@ -19,7 +19,7 @@ from ..server import AppContext, mcp
 ADMIN_SCOPE = "admin/v2"
 POLICIES_SCOPE = "policies/v2"
 REPORTS_SCOPE = "reports/v2"
-SECURITY_SCOPE = "security/v1"
+SECURITY_SCOPE = "investigate/v2"
 DEPLOYMENTS_SCOPE = "deployments/v2"
 
 ORG_DESTINATION_LIMIT = 250_000
@@ -683,7 +683,7 @@ async def audit_stale_lists(ctx: Context, stale_days: int = 30) -> str:
 async def investigate_domain(domain: str, ctx: Context) -> str:
     """Get security information for a domain."""
     try:
-        data = await _get_client(ctx).get(SECURITY_SCOPE, f"domains/{domain}/risk-score")
+        data = await _get_client(ctx).get(SECURITY_SCOPE, f"domains/risk-score/{domain}")
         return _json(data)
     except Exception as e:
         return format_error(e)
@@ -693,7 +693,30 @@ async def investigate_domain(domain: str, ctx: Context) -> str:
 async def get_domain_categorization(domain: str, ctx: Context) -> str:
     """Get the status and content categorization of a domain."""
     try:
-        data = await _get_client(ctx).get(SECURITY_SCOPE, f"domains/{domain}/categorization")
+        data = await _get_client(ctx).get(SECURITY_SCOPE, f"domains/categorization/{domain}?showLabels=true")
+        return _json(data)
+    except Exception as e:
+        return format_error(e)
+
+
+
+@mcp.tool()
+async def get_domain_security_info(domain: str, ctx: Context) -> str:
+    """Get detailed Cisco security score features for a domain.
+
+    Returns reputation and behavioral indicators such as DGA score,
+    entropy, SecureRank, infrastructure reputation, popularity,
+    geographic diversity, fast-flux status, and known threat labels.
+
+    This tool provides Cisco threat-intelligence signals. It does not
+    return organization-specific DNS activity, block-list membership,
+    access rules, or allowed/blocked event verdicts.
+    """
+    try:
+        data = await _get_client(ctx).get(
+            SECURITY_SCOPE,
+            f"security/name/{domain}",
+        )
         return _json(data)
     except Exception as e:
         return format_error(e)

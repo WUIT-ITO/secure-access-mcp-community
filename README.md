@@ -12,7 +12,7 @@ This server provides Cisco Secure Access tools for destination list management, 
 **Default URL:** `http://127.0.0.1:8000/mcp`  
 **Python:** 3.10+ (Python 3.11 or newer recommended)
 
-## Tools (75)
+## Tools (76)
 
 ### Multi-Tenant Organizations
 
@@ -50,6 +50,7 @@ This server provides Cisco Secure Access tools for destination list management, 
 |------|-------------|
 | `investigate_domain` | Get security risk information for a domain |
 | `get_domain_categorization` | Get content or security categorization for a domain |
+| `get_domain_security_info` | Get detailed security and reputation features for a domain |
 
 ### Access Rules (Policies)
 
